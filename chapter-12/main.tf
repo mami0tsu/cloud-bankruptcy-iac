@@ -56,10 +56,10 @@ resource "aws_cloudwatch_log_group" "logs" {
 }
 
 module "cloudtrail_iam_role" {
-    source = "./iam_role_module"
-    name = "cloudtrail"
-    identifier = "cloudtrai.amazonaws.com"
-    policy = data.aws_iam_policy_document.cloudtrail.json
+  source = "./iam_role_module"
+  name = "cloudtrail"
+  identifier = "cloudtrai.amazonaws.com"
+  policy = data.aws_iam_policy_document.cloudtrail.json
 }
 
 data "aws_iam_policy_document" "cloudtrail" {
@@ -68,8 +68,8 @@ data "aws_iam_policy_document" "cloudtrail" {
     resources = ["arn:aws:logs:*:*:log-group:*:logstream:*"]
 
     actions = [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
     ]
   }
 }
