@@ -1,0 +1,30 @@
+service: example
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  runtime: go1.x
+  lambdaHashingVersion: 20201221
+  logRetentionInDays: 7
+  memorySize: 128
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 'budgets:ViewBudget'
+      Resource: '*'
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  slack:
+    handler: bin/main
+    environment:
+      INCOMING_WEBHOOK_URL: ${env:SLACK_INCOMING_WEBHOOK_URL}
+    events:
+      - schedule: cron(0 1 * * ? *)
