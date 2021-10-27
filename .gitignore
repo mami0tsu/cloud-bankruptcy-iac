@@ -30,6 +30,7 @@ override.tf.json
 
 # .env file
 .env
+.envrc
 
 # Serverless directories
 .serverless
