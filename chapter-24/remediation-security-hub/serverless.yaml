@@ -1,0 +1,51 @@
+service: serverless-security-hub
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  runtime: go1.x
+  lambdaHashingVersion: 20201221
+  logRetentionInDays: 7
+  memorySize: 128
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 'securityhub:EnableSecurityHub'
+      Resource: '*'
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  remediation:
+    handler: bin/main
+    events:
+      - cloudwatchEvent:
+          event:
+            source:
+              - 'aws.config'
+            detail-type:
+              - 'Config Rules Compliance Change'
+            detail:
+              configRuleName:
+                - 'securityhub-enabled'
+              messageType:
+                - 'COmplianceChangeNotification'
+              newEvaluationResult:
+                complianceType:
+                  - 'NON_COMPLIANT'
+
+resources:
+  Resources:
+    SecurityHubEnabled:
+      Type: AWS::Config::ConfigRule
+      Properties:
+        ConfigRuleName: securityhub-enabled
+        Source:
+          Owner: AWS
+          SourceIdentifier: SECURITYHUB_ENABLED
